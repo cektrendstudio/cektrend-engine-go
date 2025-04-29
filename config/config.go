@@ -3,6 +3,7 @@ package config
 import (
 	"os"
 
+	"github.com/cektrendstudio/cektrend-engine-go/models"
 	"github.com/cektrendstudio/cektrend-engine-go/pkg/serror"
 
 	"github.com/eko/gocache/v2/cache"
@@ -17,12 +18,14 @@ type Config struct {
 	Server             *gin.Engine
 	RedisClient        *redis.Client
 	Cache              *cache.ChainCache
+	AWSConfig          *models.AWSConfig
 	RabbitMQConnection *amqp.Connection
 	RabbitMQChannel    *amqp.Channel
 }
 
 func Init() (cfg Config) {
 	Catch(cfg.InitTimezone())
+	Catch(cfg.InitBucket())
 	Catch(cfg.InitPostgres())
 	Catch(cfg.InitRabbitMQ())
 	Catch(cfg.InitCache())

@@ -12,13 +12,13 @@ import (
 
 func (h *Handler) WebScreenshot(ctx *gin.Context) {
 	var (
-		request models.RegisterUserRequest
+		request models.WebScreenshotRequest
 		errx    serror.SError
 	)
 
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		errx = serror.NewFromErrori(http.StatusBadRequest, err)
-		errx.AddComments("[handler][Register] while BodyJSONBind")
+		errx.AddComments("[handler][WebScreenshot] while BodyJSONBind")
 		handleError(ctx, errx.Code(), errx)
 		return
 	}
@@ -32,13 +32,14 @@ func (h *Handler) WebScreenshot(ctx *gin.Context) {
 		return
 	}
 
-	errx = h.userUsecase.Register(ctx, request)
+	res, errx := h.engineUsecase.WebScreenshot(request)
 	if errx != nil {
 		handleError(ctx, errx.Code(), errx)
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, models.ResponseSuccess{
-		Message: "User has successfully to registered",
+	ctx.JSON(http.StatusOK, models.ResponseSuccess{
+		Message: "WEB Screenshot success",
+		Data:    res,
 	})
 }

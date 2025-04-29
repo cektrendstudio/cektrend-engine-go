@@ -18,25 +18,22 @@ func handleError(ctx *gin.Context, statusCode int, errx serror.SError) (result g
 	if statusCode == 0 || statusCode == http.StatusInternalServerError {
 		logger.Err(errx)
 		ctx.JSON(errx.Code(), models.ResponseError{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "Internal server error",
-			Error:      errx.Error(),
+			Message: "Internal server error",
+			Error:   errx.Error(),
 		})
 		return
 	}
 
 	ctx.JSON(errx.Code(), models.ResponseError{
-		StatusCode: errx.Code(),
-		Message:    errx.Error(),
+		Message: errx.Error(),
 	})
 	return
 }
 
 func handleValidationError(ctx *gin.Context, validationErrors interface{}) (result gin.H) {
 	ctx.JSON(http.StatusUnprocessableEntity, models.ResponseError{
-		StatusCode: http.StatusUnprocessableEntity,
-		Message:    "Validation error",
-		Error:      validationErrors,
+		Message: "Validation error",
+		Error:   validationErrors,
 	})
 
 	return

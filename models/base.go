@@ -1,16 +1,18 @@
 package models
 
+import (
+	"github.com/aws/aws-sdk-go/aws/session"
+)
+
 type ResponseSuccess struct {
-	StatusCode int64       `json:"status_code"`
-	Message    string      `json:"message"`
-	Data       interface{} `json:"data,omitempty"`
-	Meta       interface{} `json:"meta,omitempty"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data,omitempty"`
+	Meta    interface{} `json:"meta,omitempty"`
 }
 
 type ResponseError struct {
-	StatusCode int         `json:"status_code"`
-	Message    string      `json:"message"`
-	Error      interface{} `json:"errors,omitempty"`
+	Message string      `json:"message"`
+	Error   interface{} `json:"errors,omitempty"`
 }
 
 type PaginationResponse struct {
@@ -33,4 +35,11 @@ type RequestFilter struct {
 	Order     string
 	Limit     int
 	Offset    int
+}
+
+type AWSConfig struct {
+	S3Session *session.Session
+	Endpoint  string
+	Bucket    string
+	Region    string
 }

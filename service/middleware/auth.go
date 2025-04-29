@@ -18,7 +18,7 @@ type AuthMiddleware struct {
 	AuthUsecase service.AuthUsecase
 }
 
-func (m *AuthMiddleware) Authenticate() gin.HandlerFunc {
+func (m *AuthMiddleware) StrictAuthenticate(allowedIPs []string) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		token := ctx.Request.Header.Get("Authorization")
 		if token == "" {
@@ -61,7 +61,53 @@ func (m *AuthMiddleware) Authenticate() gin.HandlerFunc {
 			return
 		}
 
+		clientIP := ctx.ClientIP()
+		allowed := false
+		for _, ip := range allowedIPs {
+			if clientIP == ip {
+				allowed = true
+				break
+			}
+		}
+
+		if !allowed {
+			ctx.JSON(http.StatusForbidden, gin.H{"error": "Forbidden - unauthorized IP address"})
+			ctx.Abort()
+			return
+		}
+
 		ctx.Set("user_id", userID)
+		ctx.Next()
+	}
+}
+
+func (m *AuthMiddleware) OpenAPIAuthenticate(apiKeys []string) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		key := ctx.Request.Header.Get("X-API-Key")
+		if key == "" {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, models.ResponseError{
+				Message: "API Key Not Found",
+				Error:   "Unauthorized",
+			})
+			return
+		}
+
+		valid := false
+		for _, apiKey := range apiKeys {
+			if key == apiKey {
+				valid = true
+				break
+			}
+		}
+
+		if !valid {
+			ctx.AbortWithStatusJSON(http.StatusForbidden, models.ResponseError{
+				Message: "Invalid API Key",
+				Error:   "Forbidden",
+			})
+			return
+		}
+
 		ctx.Next()
 	}
 }

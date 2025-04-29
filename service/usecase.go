@@ -18,5 +18,5 @@ type UserUsecase interface {
 }
 
 type EngineUsecase interface {
-	WebScreenshot(ctx context.Context, request models.RegisterUserRequest) (errx serror.SError)
+	WebScreenshot(request models.WebScreenshotRequest) (res models.WebScreenshotResponse, errx serror.SError)
 }

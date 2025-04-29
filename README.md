@@ -1,6 +1,6 @@
-# Kaksuy API Go
+# Cektrend Engine API Go
 
-This is a Golang project for Kaksuy API Go.
+This is a Golang project for Cektrend Engine API Go.
 
 ## Getting Started
 

@@ -12,17 +12,20 @@ import (
 )
 
 type Handler struct {
-	userUsecase service.UserUsecase
-	authUsecase service.AuthUsecase
+	userUsecase   service.UserUsecase
+	authUsecase   service.AuthUsecase
+	engineUsecase service.EngineUsecase
 }
 
 func CreateHandler(
 	userUsecase service.UserUsecase,
 	authUsecase service.AuthUsecase,
+	engineUsecase service.EngineUsecase,
 ) *gin.Engine {
 	obj := Handler{
-		userUsecase: userUsecase,
-		authUsecase: authUsecase,
+		userUsecase:   userUsecase,
+		authUsecase:   authUsecase,
+		engineUsecase: engineUsecase,
 	}
 
 	r := gin.Default()
@@ -47,21 +50,32 @@ func CreateHandler(
 	publicRouter := r.Group("/v1")
 	publicRouter.GET("/ping", func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{
-			"message": "welcome, to golang project starter",
+			"message": "welcome, to cektrend engine",
 		})
 	})
 	publicRouter.POST("/register", obj.Register)
 	publicRouter.POST("/login", obj.Login)
 	publicRouter.POST("/refresh-token", obj.RefreshToken)
 
-	authRouter := publicRouter.Group("/")
+	strictAuth := publicRouter.Group("/")
+	openApiAuth := publicRouter.Group("/open-api")
 
 	authMiddleware := &middleware.AuthMiddleware{
 		AuthUsecase: authUsecase,
 	}
-	authRouter.Use(authMiddleware.Authenticate())
+
+	strictAuth.Use(authMiddleware.StrictAuthenticate([]string{"127.0.0.1"}))
+	apiKeys := []string{
+		"b1a2c3d4e5f6g7h8i9j0k1l2m3n4o5p6",
+	}
+	openApiAuth.Use(authMiddleware.OpenAPIAuthenticate(apiKeys))
+
 	{
-		authRouter.POST("/web-ss", obj.WebScreenshot)
+		// strictAuth.POST("/web-ss", obj.WebScreenshot)
+	}
+
+	{
+		openApiAuth.POST("/web-ss", obj.WebScreenshot)
 	}
 
 	return r

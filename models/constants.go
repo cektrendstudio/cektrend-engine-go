@@ -13,6 +13,8 @@ const (
 	ApplicationBatchApplicationTypeCustomer = "customer"
 
 	ApplicationBatchProcessingStatusOnProcess = "on_process"
+
+	OrganizationDomain = "cektrend.com"
 )
 
 const (
