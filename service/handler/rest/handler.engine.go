@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"io"
 	"net/http"
 
 	"github.com/cektrendstudio/cektrend-engine-go/models"
@@ -23,5 +24,19 @@ func (h *Handler) WebScreenshot(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, res.URL)
+	imageResp, err := http.Get(res.URL)
+	if err != nil {
+		handleError(ctx, http.StatusInternalServerError, serror.NewFromError(err))
+		return
+	}
+	defer imageResp.Body.Close()
+
+	ctx.Header("Content-Type", "image/png")
+	ctx.Status(http.StatusOK)
+
+	_, err = io.Copy(ctx.Writer, imageResp.Body)
+	if err != nil {
+		handleError(ctx, http.StatusInternalServerError, serror.NewFromError(err))
+		return
+	}
 }
