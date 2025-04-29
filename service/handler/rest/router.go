@@ -56,6 +56,7 @@ func CreateHandler(
 	publicRouter.POST("/register", obj.Register)
 	publicRouter.POST("/login", obj.Login)
 	publicRouter.POST("/refresh-token", obj.RefreshToken)
+	publicRouter.GET("/tools/web-ss", obj.WebScreenshot)
 
 	strictAuth := publicRouter.Group("/")
 	openApiAuth := publicRouter.Group("/open-api")
@@ -75,7 +76,7 @@ func CreateHandler(
 	}
 
 	{
-		openApiAuth.POST("/web-ss", obj.WebScreenshot)
+		// openApiAuth.POST("/web-ss", obj.WebScreenshot)
 	}
 
 	return r

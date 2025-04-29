@@ -35,6 +35,28 @@ func NewEngineUsecase(
 }
 
 func (u *EngineUsecase) WebScreenshot(request models.WebScreenshotRequest) (res models.WebScreenshotResponse, errx serror.SError) {
+	apiKeys := []string{
+		"b1a2c3d4e5f6g7h8i9j0k1l2m3n4o5p6",
+	}
+
+	if request.Key == "" {
+		errx = serror.Newi(http.StatusBadRequest, "API Key Not Found")
+		return
+	}
+
+	valid := false
+	for _, apiKey := range apiKeys {
+		if request.Key == apiKey {
+			valid = true
+			break
+		}
+	}
+
+	if !valid {
+		errx = serror.Newi(http.StatusBadRequest, "Invalid API Key")
+		return
+	}
+
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
 

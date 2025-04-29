@@ -1,7 +1,8 @@
 package models
 
 type WebScreenshotRequest struct {
-	URL string `json:"url" validate:"required,url"`
+	Key string `json:"key"`
+	URL string `json:"url"`
 }
 
 type WebScreenshotResponse struct {
