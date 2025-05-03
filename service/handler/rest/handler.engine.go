@@ -1,7 +1,6 @@
 package rest
 
 import (
-	"io"
 	"net/http"
 
 	"github.com/cektrendstudio/cektrend-engine-go/models"
@@ -24,19 +23,41 @@ func (h *Handler) WebScreenshot(ctx *gin.Context) {
 		return
 	}
 
-	imageResp, err := http.Get(res.URL)
+	ctx.JSON(http.StatusOK, gin.H{
+		"url": res.URL,
+	})
+}
+
+func (h *Handler) PhishingReport(ctx *gin.Context) {
+	var (
+		errx serror.SError
+	)
+
+	err := h.engineUsecase.PhishingWebReportFromExcel(ctx)
 	if err != nil {
-		handleError(ctx, http.StatusInternalServerError, serror.NewFromError(err))
+		errx = serror.NewFromError(err)
+		handleError(ctx, errx.Code(), errx)
 		return
 	}
-	defer imageResp.Body.Close()
 
-	ctx.Header("Content-Type", "image/png")
-	ctx.Status(http.StatusOK)
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "success",
+	})
+}
 
-	_, err = io.Copy(ctx.Writer, imageResp.Body)
+func (h *Handler) DownloadImageFromExcel(ctx *gin.Context) {
+	var (
+		errx serror.SError
+	)
+
+	err := h.engineUsecase.DownloadImageFromExcel(ctx)
 	if err != nil {
-		handleError(ctx, http.StatusInternalServerError, serror.NewFromError(err))
+		errx = serror.NewFromError(err)
+		handleError(ctx, errx.Code(), errx)
 		return
 	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "success",
+	})
 }

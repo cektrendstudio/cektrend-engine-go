@@ -19,4 +19,6 @@ type UserUsecase interface {
 
 type EngineUsecase interface {
 	WebScreenshot(request models.WebScreenshotRequest) (res models.WebScreenshotResponse, errx serror.SError)
+	PhishingWebReportFromExcel(ctx context.Context) error
+	DownloadImageFromExcel(ctx context.Context) error
 }

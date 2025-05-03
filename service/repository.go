@@ -67,3 +67,9 @@ type StorageRepository interface {
 type S3Repository interface {
 	UploadFile(ctx context.Context, file []byte, fileName string, contentType string) (string, error)
 }
+
+type EngineRepository interface {
+	InsertPhisingWebReport(ctx context.Context, req models.CreatePhishingWebReportRequest) (id int64, errx serror.SError)
+	GetPhishingReportByURL(ctx context.Context, url string) (res models.GetPhisingWebReportResponse, errx serror.SError)
+	GetPhishingReportByURLs(ctx context.Context, urls []string, version int8) (res []models.GetPhisingWebReportResponse, errx serror.SError)
+}

@@ -20,7 +20,8 @@ func (cfg *Config) InitService() (errx serror.SError) {
 
 	s3Repo := storage.NewS3Repository(s3.New(cfg.AWSConfig.S3Session), cfg.AWSConfig)
 
-	engineUsecase := usecase.NewEngineUsecase(userRepo, authRepo, cfg.Cache, s3Repo)
+	engineRepo := postgres.NewEngineRepository(cfg.DB)
+	engineUsecase := usecase.NewEngineUsecase(userRepo, authRepo, cfg.Cache, s3Repo, engineRepo)
 	route := rest.CreateHandler(
 		userUsecase,
 		authUsecase,

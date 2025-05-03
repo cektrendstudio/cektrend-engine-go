@@ -57,6 +57,8 @@ func CreateHandler(
 	publicRouter.POST("/login", obj.Login)
 	publicRouter.POST("/refresh-token", obj.RefreshToken)
 	publicRouter.GET("/tools/web-ss", obj.WebScreenshot)
+	publicRouter.POST("/tools/phishing-report", obj.PhishingReport)
+	publicRouter.POST("/tools/download-image-excel", obj.DownloadImageFromExcel)
 
 	strictAuth := publicRouter.Group("/")
 	openApiAuth := publicRouter.Group("/open-api")
